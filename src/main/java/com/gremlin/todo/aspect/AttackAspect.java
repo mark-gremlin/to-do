@@ -18,21 +18,23 @@ public class AttackAspect {
     private final GremlinConfig gremlinConfig;
     private final GremlinTrafficCoordinatesBuilder trafficCoordinatesBuilder;
     private final FeatureFlag featureFlag;
+    private final GremlinService gremlinService;
     private Map<TrafficCoordinates, GremlinService> gremlinServiceMap = new HashMap<>();
 
     @Autowired
-    public AttackAspect(GremlinConfig gremlinConfig, GremlinTrafficCoordinatesBuilder trafficCoordinatesBuilder, FeatureFlag featureFlag) {
+    public AttackAspect(GremlinConfig gremlinConfig, GremlinTrafficCoordinatesBuilder trafficCoordinatesBuilder, FeatureFlag featureFlag, GremlinService gremlinService) {
         this.gremlinConfig = gremlinConfig;
         this.trafficCoordinatesBuilder = trafficCoordinatesBuilder;
         this.featureFlag = featureFlag;
+        this.gremlinService = gremlinService;
     }
 
     @Before("@annotation(attack)")
     public void attack(Attack attack) {
-        executeAttack(setupAttack(attack.type(), attack.fields()));
+        executeAttack(createTrafficCoordinates(attack.type(), attack.fields()));
     }
 
-    TrafficCoordinates setupAttack(String type, String[] fields) {
+    TrafficCoordinates createTrafficCoordinates(String type, String[] fields) {
         Map<String, String> map = toMap(fields);
         TrafficCoordinates trafficCoordinates = trafficCoordinatesBuilder
                 .withType(type)
@@ -51,16 +53,7 @@ public class AttackAspect {
     void executeAttack(TrafficCoordinates trafficCoordinates) {
         if (featureFlag.isAlfiEnabled()) {
 
-            GremlinService gremlinService = gremlinServiceMap.get(trafficCoordinates);
-
-            if (gremlinService == null) {
-                gremlinService = gremlinConfig.gremlinServiceFactory().getGremlinService();
-                gremlinServiceMap.put(trafficCoordinates, gremlinService);
-                gremlinService.applyImpact(trafficCoordinates);
-            } else {
-                gremlinService.applyImpact(trafficCoordinates);
-            }
-
+            gremlinService.applyImpact(trafficCoordinates);
 
         }
     }

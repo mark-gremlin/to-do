@@ -27,7 +27,7 @@ public class AdvancedAttackAspect {
     public void setUpAttack(JoinPoint joinPoint, AdvancedAttack advancedAttack) {
         ToDo args = (ToDo) joinPoint.getArgs()[0];
         LOG.info(args.toString());
-        TrafficCoordinates trafficCoordinates = attackAspect.setupAttack(advancedAttack.type(), advancedAttack.fields());
+        TrafficCoordinates trafficCoordinates = attackAspect.createTrafficCoordinates(advancedAttack.type(), advancedAttack.fields());
         attackAspect.executeAttack(trafficCoordinates);
     }
 }

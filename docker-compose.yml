@@ -6,17 +6,17 @@ services:
       context: .
     image: markfranklin/todo:v1
     environment:
-      - SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE
-      - GREMLIN_ALFI_IDENTIFIER=$GREMLIN_ALFI_IDENTIFIER
-      - GREMLIN_TEAM_ID=$GREMLIN_ALFI_IDENTIFIER
-      - GREMLIN_ALFI_ENABLED=$GREMLIN_ALFI_ENABLED
-      - GREMLIN_TEAM_CERTIFICATE_OR_FILE=$GREMLIN_TEAM_CERTIFICATE_OR_FILE
-      - GREMLIN_TEAM_PRIVATE_KEY_OR_FILE=$GREMLIN_TEAM_PRIVATE_KEY_OR_FILE
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - GREMLIN_ALFI_IDENTIFIER=Dockerized-ToDo
+      - GREMLIN_TEAM_ID=${GREMLIN_TEAM_ID}
+      - GREMLIN_ALFI_ENABLED=${GREMLIN_ALFI_ENABLED}
+      - GREMLIN_TEAM_CERTIFICATE_OR_FILE=file:///credentials/cert.pem
+      - GREMLIN_TEAM_PRIVATE_KEY_OR_FILE=file:///credentials/priv.pem
       - DB_PWD=$DB_PWD
     ports:
       - 8080:8080
     volumes:
-      - "./gremlin:/.gremlin"
+      - ~/.gremlin:/credentials
 
 
 #"-Dspring.profiles.active=dev"
